@@ -1,0 +1,14 @@
+mqttServer:
+  addr: 127.0.0.1
+  port: 1883
+  clientId: sysrep
+  # username: sysrep
+  # password: password123
+  retries: 3
+  timeout: 5
+  topic: Sysrep
+# logFile: sysrep.log
+logLevel: info
+pollInterval: 5
+reconnectDelay: 30
+dtFormat: "%Y-%m-%d %I:%M:%S %p"

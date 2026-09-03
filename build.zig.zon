@@ -1,0 +1,29 @@
+.{
+    .name = .sysrep,
+    .version = "0.0.0",
+    .fingerprint = 0xaec601e07003d587,
+    .minimum_zig_version = "0.16.0",
+    .dependencies = .{
+        .mqttz = .{
+            .url = "git+https://github.com/karlseguin/mqttz.git#cf8acd2c1acae7f5c1c67b7df53228e7dd8c8c74",
+            .hash = "mqttz-0.0.0-ywFE_2ZfAwAc6PsPYZq1W7G-EqzyhFPeCbXS_86Qj98V",
+        },
+        .zerde = .{
+            .url = "git+https://github.com/leostera/zerde.git#718abd104a408f8ffa253044979cefcefce499ac",
+            .hash = "zerde-0.1.0-kmpf2To9FQDHnL_UAFystcl8os7mAS6tqYb-vFRTM8p-",
+        },
+        .zeit = .{
+            .url = "git+https://github.com/rockorager/zeit.git?ref=0.16#1b1c95b2282c3003bb79ff6f44d3021ddcb279c1",
+            .hash = "zeit-0.6.0-5I6bk7q6AgBdMJxze3D4l9ylQhkviQ_BX9FigDt13MFn",
+        },
+        .zig_yaml = .{
+            .url = "git+https://github.com/tabre/zig-yaml.git#8ba46639f978dcb70b5caeadbf4184412059eddb",
+            .hash = "zig_yaml-0.3.0-C1161hGsAgAl5r2Nn7wrIKcU4WMOQR9lV6lL8TJdE2u_",
+        },
+        .zig_libs = .{
+            .url = "git+https://github.com/zaxified/zig-libs.git#191431b8c3090c8efa6333e411a9c3d2f7218c83",
+            .hash = "zig_libs-0.0.0-WiQ0GidOKwNNutdY41zorJnNquZl6C6qzxubNww9_pw-",
+        },
+    },
+    .paths = .{ "build.zig", "build.zig.zon", "src" },
+}
