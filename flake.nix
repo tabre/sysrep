@@ -1,5 +1,5 @@
 {
-  description = "SysRep - MQTT-based system monitor";
+  description = "SysRep - MQTT-Based System Monitor";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -76,7 +76,7 @@
               type = yamlFormat.type;
               default = { };
               description = "Configuration written to sysrep's config file.";
-              cfg = {
+              default = {
                 mqttServer = {
                   addr = "127.0.0.1";
                   port = 1883;
@@ -95,7 +95,7 @@
 
           config = lib.mkIf cfg.enable {
             systemd.services.sysrep = {
-              description = "SysRep - MQTT-based system monitor";
+              description = "SysRep - MQTT-Based System Monitor";
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
               serviceConfig = {
