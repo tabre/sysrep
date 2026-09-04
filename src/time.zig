@@ -29,6 +29,10 @@ pub fn now(buf: []u8) ?[]u8 {
     return format(std.Io.Clock.real.now(io).toMilliseconds(), buf);
 }
 
+pub fn now_s() i64 {
+    return std.Io.Clock.real.now(io).toSeconds();
+}
+
 pub fn format(ms: i64, buf: []u8) ?[]u8 {
     const zone = tz orelse return null;
     const instant = zeit.instant(io, .{

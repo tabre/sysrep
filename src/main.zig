@@ -25,8 +25,7 @@ const logger = std.log.scoped(.sysrep);
 // SAFETY: io is defined on the first line of main()
 var io: std.Io = undefined;
 
-const TCP_USER_TIMEOUT: u32 = 18;
-const timeout_ms: c_uint = 5000;
+const PING_INTERVAL_SEC:i64 = 30;
 
 pub fn main(init: std.process.Init) !void {
     io = init.io;
@@ -62,6 +61,8 @@ pub fn main(init: std.process.Init) !void {
         client.deinit();
     }
 
+    var last_ping = time.now_s();
+
     while (true) {
         if (client.socket == null) {
             logger.info("Connecting to {s}", .{ cfg.mqttServer.addr });
@@ -69,6 +70,7 @@ pub fn main(init: std.process.Init) !void {
                 Io.sleep(init.io, .fromSeconds(cfg.reconnectDelay), .awake) catch continue;
                 continue; 
             };
+            last_ping = time.now_s();
         }
 
         const ss = SysRep.init(io, alloc);
@@ -86,8 +88,10 @@ pub fn main(init: std.process.Init) !void {
             cfg.mqttServer.topic, ss.hostname 
         });
         defer alloc.free(topic);
+       
+        logger.debug("Publishing to {s}", .{ topic });
 
-        _ = client.publish(.{}, .{
+        _ = client.publish(.{ .retries = 0 }, .{
             .topic = topic,
             .message = out.written()
         }) catch |e| {
@@ -97,6 +101,21 @@ pub fn main(init: std.process.Init) !void {
             continue;
         };
 
+        logger.debug("Publish succeeded", .{});
+
+        const now = time.now_s();
+        if (now - last_ping >= PING_INTERVAL_SEC) {
+            logger.debug("Pinging server", .{});
+            client.ping(.{ .retries = 0, .timeout = 5000}) catch |e| {
+                logger.warn("Ping failed, connection appears dead: {any}", .{ e });
+                if (client.socket) |s| s.close(io);
+                client.socket = null;
+                continue;
+            };
+            last_ping = now;
+            logger.debug("Ping succeeded", .{});
+        }
+
         Io.sleep(init.io, .fromSeconds(cfg.pollInterval), .awake) catch continue;
     }
 }
@@ -105,24 +124,14 @@ fn clientConnect(client: *Client, cfg: *const MqttServerConfig) !void {
     client.connect(.{ .retries = cfg.retries, .timeout = cfg.timeout * 1000 }, .{ 
         .client_id = cfg.clientId,
         .username = cfg.username,
-        .password = cfg.password
+        .password = cfg.password,
+        .keepalive_sec = cfg.keepAlive
     }) catch |e| {
         logger.err("Error connecting to server: {any}\n", .{ e });
         return err.client.ConnectionError; 
     };
 
-    std.posix.setsockopt(
-        client.socket.?.socket.handle,
-        std.posix.IPPROTO.TCP,
-        TCP_USER_TIMEOUT,
-        std.mem.asBytes(&timeout_ms)
-    ) catch |e| {
-        logger.err(
-            "Error setting socket timeout: {any}\n", .{ e }
-        );
-    };
-
-    const response: ?Packet = client.readPacket(.{}) catch {
+    const response: ?Packet = client.readPacket(.{ .retries = 0 }) catch {
         return err.client.PacketReadError;
     };
 
