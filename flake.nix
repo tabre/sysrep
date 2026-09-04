@@ -80,8 +80,9 @@
                   addr = "127.0.0.1";
                   port = 1883;
                   clientId = "sysrep";
-                  retries = 3;
+                  keepAlive = 30;
                   timeout = 5;
+                  retries = 3;
                   topic = "Sysrep";
                 };
                 logLevel = "info";
