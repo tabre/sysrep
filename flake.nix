@@ -103,7 +103,7 @@
                 StateDirectory = "sysrep";
                 Restart = "always";
                 RestartSec = 5;
-                ExecStartPre = "+${pkgs.coreutils}/bin/ln -sf ${configFile} /var/lib/sysrep/config.yaml";
+                ExecStartPre = "+${pkgs.coreutils}/bin/ln -sf ${configFile} /var/lib/sysrep/cfg.yml";
               };
             };
           };
