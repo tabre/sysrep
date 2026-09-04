@@ -4,8 +4,9 @@ mqttServer:
   clientId: sysrep
   # username: sysrep
   # password: password123
-  retries: 3
+  keepalive: 30
   timeout: 5
+  retries: 3
   topic: Sysrep
 # logFile: sysrep.log
 logLevel: info

@@ -18,8 +18,9 @@ pub const MqttServerConfig = struct {
     clientId: []const u8 = "sysrep",
     username: ?[]const u8 = null,
     password: ?[]const u8 = null,
-    retries: u16 = 3,
+    keepAlive: u16 = 30,
     timeout: i32 = 5,
+    retries: u16 = 3,
     topic: []const u8 = "Systems"
 };
 
