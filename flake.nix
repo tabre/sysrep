@@ -69,12 +69,11 @@
 
             package = lib.mkOption {
               type = lib.types.package;
-              default = pkgs.sysrep;
+              default = self.packages.${pkgs.system}.default;
             };
 
             settings = lib.mkOption {
               type = yamlFormat.type;
-              default = { };
               description = "Configuration written to sysrep's config file.";
               default = {
                 mqttServer = {
@@ -104,7 +103,7 @@
                 StateDirectory = "sysrep";
                 Restart = "always";
                 RestartSec = 5;
-                ExecStartPre = "+${pkgs.coreutils} -sf ${configFile} /var/lib/sysrep/config.yaml";
+                ExecStartPre = "+${pkgs.coreutils}/bin/ln -sf ${configFile} /var/lib/sysrep/config.yaml";
               };
             };
           };
